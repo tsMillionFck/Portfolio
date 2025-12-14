@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+/* --- BAUHAUS THEME ENGINE --- */
+:root {
+  /* LIGHT MODE (Default) */
+  --bg: #f2f0e9;
+  --ink: #111111;
+  --line: #111111;
+  --cursor-fill: #ffffff;
+
+  /* Blend Modes for Images/Graphics */
+  --blend-mode: multiply;
+  --overlay-opacity: 0.6;
+
+  /* Bauhaus Primaries */
+  --red: #e94e34;
+  --blue: #2e5bf1;
+  --yellow: #f19a2e;
+}
+
+body[data-theme="dark"] {
+  /* DARK MODE */
+  --bg: #050505;
+  --ink: #e0e0e0;
+  --line: #333333;
+  --cursor-fill: #ffffff;
+
+  /* Switch blend mode so colors pop on black */
+  --blend-mode: screen;
+  --overlay-opacity: 0.4;
+
+  /* Force body to update */
+  background-color: #050505 !important;
+  color: #e0e0e0 !important;
+}
+
+/* --- BASE STYLES --- */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.5s, color 0.5s;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- TAILWIND THEME EXTENSION --- */
+@theme {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-line: var(--line);
+  --color-bauhaus-red: var(--red);
+  --color-bauhaus-blue: var(--blue);
+  --color-bauhaus-yellow: var(--yellow);
+
+  --font-family-display: "Space Grotesk", sans-serif;
+  --font-family-serif: "Playfair Display", serif;
+  --font-family-mono: "JetBrains Mono", monospace;
+  --font-family-body: "Inter", sans-serif;
+}
+
+/* Dark mode overrides for Tailwind classes using CSS variables */
+body[data-theme="dark"] .bg-bg {
+  background-color: var(--bg) !important;
+}
+
+body[data-theme="dark"] .text-ink {
+  color: var(--ink) !important;
+}
+
+body[data-theme="dark"] .border-line {
+  border-color: var(--line) !important;
+}
+
+body[data-theme="dark"] .bg-ink {
+  background-color: var(--ink) !important;
+}
+
+body[data-theme="dark"] .text-bg {
+  color: var(--bg) !important;
+}
