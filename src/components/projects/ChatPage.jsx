@@ -11,8 +11,9 @@ export default function ChatPage({ isOpen, onClose }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    let streams = [];
     const fontSize = 14;
+    const columns = Math.ceil(canvas.width / fontSize);
+    const streams = [];
 
     const resize = () => {
       canvas.width = canvas.offsetWidth;
@@ -21,52 +22,53 @@ export default function ChatPage({ isOpen, onClose }) {
     resize();
     window.addEventListener("resize", resize);
 
-    class Stream {
-      constructor() {
-        this.reset();
-      }
-      reset() {
-        this.x =
-          Math.floor(Math.random() * (canvas.width / fontSize)) * fontSize;
-        this.y = Math.random() * -1000;
-        this.speed = Math.random() * 3 + 2;
-        this.length = Math.random() * 20 + 10;
-        this.chars = [];
-        this.generateChars();
-      }
-      generateChars() {
-        // Chat-like symbols and binary
-        const chars = "@#MSG_<>{}[]01";
-        for (let i = 0; i < this.length; i++) {
-          this.chars.push(chars[Math.floor(Math.random() * chars.length)]);
-        }
-      }
-      update() {
-        this.y += this.speed;
-        if (this.y > canvas.height + 100) this.reset();
-      }
-      draw() {
-        this.chars.forEach((char, i) => {
-          const y = this.y - i * fontSize;
-          if (y > 0 && y < canvas.height) {
-            // Neo-Brutalist Green
-            ctx.fillStyle = i === 0 ? "#ffffff" : "#00FF94";
-            ctx.globalAlpha = 1 - i / this.length;
-            ctx.font = `${fontSize}px monospace`;
-            ctx.fillText(char, this.x, y);
-          }
-        });
+    for (let i = 0; i < columns / 3; i++) {
+      streams.push({
+        x: Math.floor(Math.random() * (canvas.width / fontSize)) * fontSize,
+        y: Math.random() * -1000,
+        speed: Math.random() * 3 + 2,
+        length: Math.random() * 20 + 10,
+        chars: [],
+        fontSize: 14,
+        width: canvas.width,
+        height: canvas.height,
+      });
+      // Generate initial chars
+      const chars = "@#MSG_<>{}[]01";
+      for (let j = 0; j < streams[i].length; j++) {
+        streams[i].chars.push(chars[Math.floor(Math.random() * chars.length)]);
       }
     }
-
-    const columns = Math.ceil(canvas.width / fontSize);
-    for (let i = 0; i < columns / 3; i++) streams.push(new Stream());
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear fully for crisp look
       streams.forEach((s) => {
-        s.update();
-        s.draw();
+        // Update
+        s.y += s.speed;
+        if (s.y > canvas.height + 100) {
+          s.y = Math.random() * -1000;
+          s.x =
+            Math.floor(Math.random() * (canvas.width / fontSize)) * fontSize;
+          s.speed = Math.random() * 3 + 2;
+          s.length = Math.random() * 20 + 10;
+          s.chars = [];
+          const chars = "@#MSG_<>{}[]01";
+          for (let j = 0; j < s.length; j++) {
+            s.chars.push(chars[Math.floor(Math.random() * chars.length)]);
+          }
+        }
+
+        // Draw
+        s.chars.forEach((char, i) => {
+          const y = s.y - i * fontSize;
+          if (y > 0 && y < canvas.height) {
+            // Neo-Brutalist Green
+            ctx.fillStyle = i === 0 ? "#ffffff" : "#00FF94";
+            ctx.globalAlpha = 1 - i / s.length;
+            ctx.font = `${fontSize}px monospace`;
+            ctx.fillText(char, s.x, y);
+          }
+        });
       });
       animationRef.current = requestAnimationFrame(animate);
     };
@@ -113,7 +115,7 @@ export default function ChatPage({ isOpen, onClose }) {
       {/* Close Button */}
       <button
         onClick={onClose}
-        className="fixed top-6 right-6 z-[210] w-12 h-12 flex items-center justify-center text-[#00FF94] bg-ink border-2 border-[#00FF94] rounded-none hover:bg-[#00FF94] hover:text-ink transition-all duration-0 font-bold text-xl shadow-[4px_4px_0px_#00FF94]"
+        className="fixed top-6 right-6 z-[210] w-12 h-12 flex items-center justify-center text-[#00FF94] bg-ink border-2 border-[#00FF94] rounded-none hover:bg-[#00FF94] hover:text-ink transition-all duration-0 font-bold text-xl shadow-[4px_4px_0px_#00FF94] cursor-pointer"
       >
         ✕
       </button>
@@ -262,9 +264,9 @@ export default function ChatPage({ isOpen, onClose }) {
       <div className="border-t-2 border-[#333] p-[4vw] flex justify-center bg-ink">
         <button
           onClick={onClose}
-          className="interactable font-bold text-xl border-b-2 border-[#00FF94] text-[#fffef8] hover:text-[#00FF94] transition-colors duration-0"
+          className="relative z-50 cursor-pointer interactable font-bold text-xl border-b-2 border-[#00FF94] text-[#fffef8] hover:text-[#00FF94] transition-colors duration-0"
         >
-          ← EXIT TERMINAL
+          ← Back to Portfolio
         </button>
       </div>
     </div>

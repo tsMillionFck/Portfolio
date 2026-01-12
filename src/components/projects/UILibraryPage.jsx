@@ -121,7 +121,7 @@ export default function UILibraryPage({ isOpen, onClose }) {
       {/* Close Button */}
       <button
         onClick={onClose}
-        className="fixed top-6 right-6 z-[210] w-12 h-12 flex items-center justify-center text-zinc-900 bg-white border border-zinc-200 rounded-full hover:bg-zinc-900 hover:text-white transition-all duration-300 font-display text-xl shadow-lg"
+        className="fixed top-6 right-6 z-[210] w-12 h-12 flex items-center justify-center text-zinc-900 bg-white border border-zinc-200 rounded-full hover:bg-zinc-900 hover:text-white transition-all duration-300 font-display text-xl shadow-lg cursor-pointer"
       >
         ✕
       </button>
@@ -272,6 +272,16 @@ export default function UILibraryPage({ isOpen, onClose }) {
         >
           Launch Encyclopedia
         </a>
+      </div>
+
+      {/* Back Button */}
+      <div className="border-t border-zinc-800 p-[4vw] flex justify-center bg-zinc-900">
+        <button
+          onClick={onClose}
+          className="relative z-50 cursor-pointer interactable font-sans text-sm uppercase tracking-widest border-b border-white pb-1 hover:opacity-50 transition-opacity text-white"
+        >
+          ← Back to Portfolio
+        </button>
       </div>
     </div>
   );

@@ -1,13 +1,11 @@
 import { useState } from "react";
 import ProjectCard from "./projects/ProjectCard";
 import ProjectDrawer from "./projects/ProjectDrawer";
-import MewoMiniPlayer from "./projects/MewoMiniPlayer";
-import WeatherCard from "./projects/WeatherCard";
 import RealTimeEnterprisePage from "./projects/RealTimeEnterprisePage";
 import IntelligencePage from "./projects/IntelligencePage";
-import MewoPage from "./projects/MewoPage";
+import ProjectPageTemplate from "./projects/ProjectPageTemplate";
+import ProjectHoverWidget from "./projects/ProjectHoverWidget";
 import JournalPage from "./projects/JournalPage";
-import ClimatePage from "./projects/ClimatePage";
 import MioPage from "./projects/MioPage";
 import ChatPage from "./projects/ChatPage";
 import MindMapPage from "./projects/MindMapPage";
@@ -73,15 +71,19 @@ const drawerProjects = [
   {
     number: "06",
     category: "THE PROJECTS",
-    title: "Budget Tracker",
-    description: "Expense management",
-    visual: (
-      <div className="w-full h-full bg-red-500 rounded-lg opacity-20"></div>
-    ),
+    title: "The Real Tracker",
+    description:
+      "Financial dashboard designing to track runway and financial freedom with a raw, Neo-Brutalist industrial aesthetic.",
+    longDescription:
+      "Core Architecture: Full-stack MERN (MongoDB, Express, React, Node) application. / Financial Logic: Implements complex calculations for 'Runway' and 'Financial Freedom' status. / Dashboard Features: Includes a 'Log' card, 'Command Grid' for entries, and technical charts. / Authentication: Secure sessions with JWT and bcryptjs. / Design: Neo-Brutalist style with #e0e7ff backgrounds and 4px black borders.",
+    visual: <ProjectHoverWidget type="budget" />,
     techStack: [
+      { name: "MongoDB", type: "backend" },
+      { name: "Express", type: "backend" },
       { name: "React", type: "frontend" },
-      { name: "Vite", type: "frontend" },
-      { name: "Tailwind", type: "frontend" },
+      { name: "Node.js", type: "backend" },
+      { name: "JWT", type: "backend" },
+      { name: "bcryptjs", type: "backend" },
     ],
     buttonText: "VIEW",
     demoUrl: "https://the-real-tracker-psi.vercel.app",
@@ -89,30 +91,37 @@ const drawerProjects = [
   {
     number: "07",
     category: "THE PROJECTS",
-    title: "Music Player 2",
-    description: "Typographic player",
-    visual: <MewoMiniPlayer />,
+    title: "musicPlayer3.0",
+    description:
+      "A Swiss International Style music player featuring dynamic theming and high-contrast typographic interaction.",
+    longDescription:
+      "Core Architecture: React 19 and Vite, leveraging Tailwind CSS 4 for styling. / Dynamic Theming: Uses colorthief to extract dominant colors from album covers. / Titan Background: Massive scrolling marquee displays song titles. / Design: Minimalist Swiss style with rotating cross animations and grayscale filters. / Interaction: includes a 'Spark Canvas' for particle effects.",
+    visual: <ProjectHoverWidget type="music" />,
     techStack: [
-      { name: "React", type: "frontend" },
-      { name: "Tailwind", type: "frontend" },
-      { name: "Express", type: "backend" },
+      { name: "React 19", type: "frontend" },
+      { name: "Tailwind v4", type: "frontend" },
+      { name: "Colorthief", type: "frontend" },
+      { name: "Vite", type: "frontend" },
     ],
     buttonText: "OPEN",
-    pageKey: "mewo", // Keeping internal link for demo if needed
     demoUrl: "https://napster-three.vercel.app",
   },
   {
     number: "08",
     category: "THE PROJECTS",
-    title: "Weather Forecast",
-    description: "News & Climate",
-    visual: <WeatherCard />,
+    title: "WeatherForcast",
+    description:
+      "An immersive environmental dashboard with state-driven UI and animated weather visualizations.",
+    longDescription:
+      "Purpose: An immersive environmental dashboard. / State-Driven UI: Changes its entire CSS class based on weather data (e.g., weather-storm). / Animated Weather: Implements custom keyframe animations for sun, clouds, and rain. / Information Ticker: Bottom-running news ticker for alerts. / Design: Neo-Retro palette with Courier New fonts and collapsible detail panels.",
+    visual: <ProjectHoverWidget type="weather" />,
     techStack: [
-      { name: "React", type: "frontend" },
-      { name: "API", type: "backend" },
+      { name: "React 19", type: "frontend" },
+      { name: "Vite", type: "frontend" },
+      { name: "CSS Modules", type: "frontend" },
+      { name: "Courier New", type: "frontend" },
     ],
     buttonText: "FORECAST",
-    pageKey: "climate",
     demoUrl: "https://weather-forcast-umber.vercel.app",
   },
 
@@ -120,14 +129,17 @@ const drawerProjects = [
   {
     number: "09",
     category: "THE INTELLIGENCE",
-    title: "Book Suggestion",
-    description: "AI Recommendation Engine",
-    visual: (
-      <div className="w-full h-full bg-blue-500 rounded-lg opacity-20"></div>
-    ),
+    title: "VibeRead AI",
+    description:
+      "Semantic book discovery engine that processes natural language 'vibes' to match your emotional reading needs.",
+    longDescription:
+      "Core Architecture: React 18 and Vite with Tailwind CSS. / Semantic Search: Processes natural language 'vibes' instead of searching by title. / AI Service Integration: Uses language models to match book summaries to user descriptions. / Design: 'Minimalist Librarian' aesthetic with Zinc-950 dark theme. / Interaction: Smooth transitions revealing synopses and similarity discovery.",
+    visual: <ProjectHoverWidget type="book" />,
     techStack: [
-      { name: "AI", type: "backend" },
-      { name: "React", type: "frontend" },
+      { name: "React 18", type: "frontend" },
+      { name: "Vite", type: "frontend" },
+      { name: "Tailwind", type: "frontend" },
+      { name: "AI AI-Service", type: "backend" },
     ],
     buttonText: "ASK AI",
     demoUrl: "https://book-suggestion-ai.vercel.app",
@@ -135,14 +147,17 @@ const drawerProjects = [
   {
     number: "10",
     category: "THE INTELLIGENCE",
-    title: "AI Quiz",
-    description: "Knowledge Assessment",
-    visual: (
-      <div className="w-full h-full bg-purple-500 rounded-lg opacity-20"></div>
-    ),
+    title: "AI-QUIZ (Wized Quiz)",
+    description:
+      "Bento-styled gamified learning platform with AI-generated questions and high-frequency feedback loops.",
+    longDescription:
+      "Core Architecture: React 19, Lucide React, and Canvas Confetti. / Smart Generation: Connects to an AI backend to generate questions on any subject. / Game Loop: Correct/Incorrect audio feedback and progress bars. / Feedback: Confetti bursts on completion and skeletal loading states. / Design: Bento-styled with 32px rounded corners and purple accents (#8b5cf6).",
+    visual: <ProjectHoverWidget type="quiz" />,
     techStack: [
-      { name: "React", type: "frontend" },
-      { name: "Gemini", type: "backend" },
+      { name: "React 19", type: "frontend" },
+      { name: "Lucide React", type: "frontend" },
+      { name: "Canvas Confetti", type: "frontend" },
+      { name: "AI-Generator", type: "backend" },
     ],
     buttonText: "START",
     demoUrl: "https://ai-quiz-kappa-five.vercel.app",
@@ -152,14 +167,16 @@ const drawerProjects = [
   {
     number: "11",
     category: "REAL TIME",
-    title: "Interactive Map",
-    description: "Data Visualization",
-    visual: (
-      <div className="w-full h-full bg-green-500 rounded-lg opacity-20"></div>
-    ),
+    title: "Mio-Spatial",
+    description:
+      "Clinical and professional interactive mapping tool for categorized location intelligence and geo-filtering.",
+    longDescription:
+      "Core Architecture: Vanilla JavaScript and Leaflet.js. / Geo-Filtering: Filter map pins by category (Work, Food, Nature, Fun) using Filter Chips. / Sidebar Sync: Map interactions automatically highlight corresponding items in the sidebar. / Location Intelligence: 'Locate Me' feature and custom popup-content templates. / Design: Clinical theme with Inter font and clear sidebar separation.",
+    visual: <ProjectHoverWidget type="map" />,
     techStack: [
-      { name: "Leaflet", type: "frontend" },
-      { name: "D3.js", type: "frontend" },
+      { name: "Vanilla JS", type: "frontend" },
+      { name: "Leaflet.js", type: "frontend" },
+      { name: "Inter Font", type: "frontend" },
     ],
     buttonText: "EXPLORE",
     demoUrl: "https://interactive-info-graphs.vercel.app",
@@ -167,14 +184,17 @@ const drawerProjects = [
   {
     number: "12",
     category: "REAL TIME",
-    title: "InfoGraph",
-    description: "Visual Analytics",
-    visual: (
-      <div className="w-full h-full bg-orange-500 rounded-lg opacity-20"></div>
-    ),
+    title: "Orbital Debris Tracker",
+    description:
+      "NASA-inspired scientific tracker visualizing space pollution history through timeline scrubbing and orbit simulation.",
+    longDescription:
+      "Purpose: Historical visualization of space pollution. / Timeline Scrubbing: Range slider updates charts synchronously from 1960 to 2020. / Multi-View Charts: Uses Chart.js to toggle between Line, Bar, and Pie representations. / Simulation: Central canvas orbit system populating with debris dots. / Design: NASA-inspired 'Scientific' theme with large year displays.",
+    visual: <ProjectHoverWidget type="infograph" />,
     techStack: [
-      { name: "React", type: "frontend" },
-      { name: "Recharts", type: "frontend" },
+      { name: "JavaScript", type: "frontend" },
+      { name: "Chart.js", type: "frontend" },
+      { name: "HTML5 Canvas", type: "frontend" },
+      { name: "NASA Data API", type: "backend" },
     ],
     buttonText: "ANALYZE",
     demoUrl: "https://interactive-info-graphs-aymy.vercel.app",
@@ -185,13 +205,16 @@ const drawerProjects = [
     number: "13",
     category: "DESIGN MENU",
     title: "UI Design Giver",
-    description: "Generative Design",
-    visual: (
-      <div className="w-full h-full bg-pink-500 rounded-lg opacity-20"></div>
-    ),
+    description:
+      "A dual-step AI meta-tool that generates design concepts and live CSS previews for provided layouts.",
+    longDescription:
+      "Core Architecture: React 19, Google Generative AI (Gemini). / Dual-Step AI Generation: First generates 3 design concepts, then applies them to user HTML/JSX via generated CSS. / Live Preview: Sandboxed real-time rendering of generated CSS. / Design: Neutral grayscale aesthetic (Slate-50) focusing on generated content.",
+    visual: <ProjectHoverWidget type="design_giver" />,
     techStack: [
-      { name: "AI", type: "backend" },
-      { name: "Tailwind", type: "frontend" },
+      { name: "React 19", type: "frontend" },
+      { name: "Gemini AI", type: "backend" },
+      { name: "Tailwind CSS", type: "frontend" },
+      { name: "Lucide React", type: "frontend" },
     ],
     buttonText: "GENERATE",
     demoUrl: "https://design-gen-eight.vercel.app",
@@ -209,8 +232,7 @@ export default function SelectedWorks() {
   const [libraryOpen, setLibraryOpen] = useState(false);
 
   // Drawer project pages state
-  const [mewoOpen, setMewoOpen] = useState(false);
-  const [climateOpen, setClimateOpen] = useState(false);
+  const [activeDrawerProject, setActiveDrawerProject] = useState(null);
 
   const handleProjectClick = (pageType) => {
     if (pageType === "flux") setRealTimeOpen(true);
@@ -220,12 +242,6 @@ export default function SelectedWorks() {
     if (pageType === "chat") setChatOpen(true);
     if (pageType === "mindmap") setMindMapOpen(true);
     if (pageType === "library") setLibraryOpen(true);
-  };
-
-  const handleDrawerClick = (pageKey) => {
-    if (pageKey === "mewo") setMewoOpen(true);
-    if (pageKey === "journal") setJournalOpen(true);
-    if (pageKey === "climate") setClimateOpen(true);
   };
 
   return (
@@ -248,9 +264,12 @@ export default function SelectedWorks() {
         onClose={() => setLibraryOpen(false)}
       />
 
-      {/* Drawer Project Pages */}
-      <MewoPage isOpen={mewoOpen} onClose={() => setMewoOpen(false)} />
-      <ClimatePage isOpen={climateOpen} onClose={() => setClimateOpen(false)} />
+      {/* Reusable Drawer Project Modal */}
+      <ProjectPageTemplate
+        isOpen={!!activeDrawerProject}
+        onClose={() => setActiveDrawerProject(null)}
+        project={activeDrawerProject}
+      />
 
       {/* Section Header */}
       <div
@@ -272,6 +291,7 @@ export default function SelectedWorks() {
                 ? () => handleProjectClick(project.hasPage)
                 : undefined
             }
+            className="h-full"
           >
             <ProjectCard
               category={project.category}
@@ -296,11 +316,7 @@ export default function SelectedWorks() {
             visual={project.visual}
             techStack={project.techStack}
             buttonText={project.buttonText}
-            onClick={
-              project.pageKey
-                ? () => handleDrawerClick(project.pageKey)
-                : undefined
-            }
+            onClick={() => setActiveDrawerProject(project)}
             demoUrl={project.demoUrl}
           />
         ))}

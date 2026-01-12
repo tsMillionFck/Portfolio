@@ -6,7 +6,7 @@ export default function ProjectCard({
   reference,
 }) {
   return (
-    <div className="border-r-2 border-line min-h-[200px] p-[4vw] flex flex-col justify-between relative overflow-hidden transition-colors duration-300 hover:bg-ink hover:text-bg group max-md:border-r-0 max-md:p-[40px_20px]">
+    <div className="h-full border-r-2 border-line min-h-[200px] p-[4vw] flex flex-col justify-between relative overflow-hidden transition-colors duration-300 hover:bg-ink hover:text-bg group max-md:border-r-0 max-md:p-[40px_20px]">
       {href && href !== "#" ? (
         <a
           href={href}
