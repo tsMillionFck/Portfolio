@@ -15,6 +15,8 @@ export default function ProjectDrawer({
   visual,
   techStack = [],
   buttonText = "OPEN",
+  onClick,
+  demoUrl,
 }) {
   const drawerRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -131,11 +133,28 @@ export default function ProjectDrawer({
             ))}
           </div>
 
-          {/* Action Button */}
-          <div className="ml-auto">
-            <div className="inline-block py-3 px-[30px] border-2 border-ink font-display font-bold transition-all duration-200 bg-bg text-ink text-sm">
+          {/* Action Buttons */}
+          <div className="ml-auto flex gap-3">
+            {demoUrl && (
+              <a
+                href={demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-block py-3 px-[30px] border-2 border-bauhaus-blue font-display font-bold transition-all duration-200 bg-bauhaus-blue text-white text-sm hover:bg-transparent hover:text-bauhaus-blue cursor-pointer no-underline"
+              >
+                DEMO
+              </a>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick?.();
+              }}
+              className="inline-block py-3 px-[30px] border-2 border-ink font-display font-bold transition-all duration-200 bg-bg text-ink text-sm hover:bg-ink hover:text-bg cursor-pointer"
+            >
               {buttonText}
-            </div>
+            </button>
           </div>
         </div>
       </div>

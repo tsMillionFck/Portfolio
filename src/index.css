@@ -71,6 +71,7 @@ body::-webkit-scrollbar {
   --font-family-serif: "Playfair Display", serif;
   --font-family-mono: "JetBrains Mono", monospace;
   --font-family-body: "Inter", sans-serif;
+  --font-family-journal-serif: "Lora", serif;
 }
 
 /* Dark mode overrides for Tailwind classes using CSS variables */

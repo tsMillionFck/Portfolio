@@ -7,10 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "demos:all": "concurrently \"npm run dev --prefix src/components/musicPlayer3.0\" \"npm run dev --prefix src/components/One-Journal\" \"npm run dev --prefix src/components/The\\ Real\\ Tracker\" \"npm run dev --prefix src/components/WeatherForcast\""
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@tailwindcss/postcss": "^4.1.18",
+    "gsap": "^3.14.2",
     "postcss": "^8.5.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -21,6 +24,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "concurrently": "^8.2.2",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",

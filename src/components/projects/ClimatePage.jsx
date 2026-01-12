@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 
-export default function FluxPage({ isOpen, onClose }) {
+export default function ClimatePage({ isOpen, onClose }) {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
-  // Fluid animation for hero
+  // Weather/clouds animation for hero
   useEffect(() => {
     if (!isOpen) return;
 
@@ -14,6 +14,26 @@ export default function FluxPage({ isOpen, onClose }) {
     const ctx = canvas.getContext("2d");
     let time = 0;
 
+    const clouds = [];
+    for (let i = 0; i < 8; i++) {
+      clouds.push({
+        x: Math.random() * 1000,
+        y: Math.random() * 300 + 100,
+        width: Math.random() * 150 + 100,
+        speed: Math.random() * 0.5 + 0.2,
+      });
+    }
+
+    const raindrops = [];
+    for (let i = 0; i < 100; i++) {
+      raindrops.push({
+        x: Math.random() * 1000,
+        y: Math.random() * 600,
+        speed: Math.random() * 5 + 3,
+        length: Math.random() * 15 + 5,
+      });
+    }
+
     const resize = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -22,50 +42,88 @@ export default function FluxPage({ isOpen, onClose }) {
     resize();
     window.addEventListener("resize", resize);
 
-    const drawFluidBackground = () => {
+    const drawWeather = () => {
       const { width, height } = canvas;
       ctx.clearRect(0, 0, width, height);
 
-      // Draw multiple fluid circles
-      const circles = [
-        { x: width * 0.3, y: height * 0.4, baseRadius: 120, color: "#e94e34" },
-        { x: width * 0.7, y: height * 0.3, baseRadius: 80, color: "#2e5bf1" },
-        { x: width * 0.5, y: height * 0.7, baseRadius: 100, color: "#f19a2e" },
-      ];
+      // Draw clouds
+      ctx.fillStyle = "#2e5bf1";
+      ctx.globalAlpha = 0.15;
 
-      circles.forEach((circle, idx) => {
+      clouds.forEach((cloud) => {
+        const x = ((cloud.x + time * cloud.speed * 50) % (width + 200)) - 100;
+
+        // Draw cloud shape
         ctx.beginPath();
-        const points = 80;
-
-        for (let i = 0; i <= points; i++) {
-          const angle = (i / points) * Math.PI * 2;
-          const wave1 = Math.sin(angle * 3 + time * 0.5 + idx) * 8;
-          const wave2 = Math.sin(angle * 5 - time * 0.3 + idx * 2) * 5;
-          const wave3 = Math.cos(angle * 4 + time * 0.8 + idx) * 4;
-
-          const radius = circle.baseRadius + wave1 + wave2 + wave3;
-          const x = circle.x + Math.cos(angle) * radius;
-          const y = circle.y + Math.sin(angle) * radius;
-
-          if (i === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        }
-
-        ctx.closePath();
-        ctx.globalAlpha = 0.6;
-        ctx.fillStyle = circle.color;
+        ctx.arc(x, cloud.y, cloud.width * 0.3, 0, Math.PI * 2);
+        ctx.arc(
+          x + cloud.width * 0.25,
+          cloud.y - 15,
+          cloud.width * 0.25,
+          0,
+          Math.PI * 2
+        );
+        ctx.arc(
+          x + cloud.width * 0.5,
+          cloud.y,
+          cloud.width * 0.35,
+          0,
+          Math.PI * 2
+        );
+        ctx.arc(
+          x + cloud.width * 0.75,
+          cloud.y - 10,
+          cloud.width * 0.2,
+          0,
+          Math.PI * 2
+        );
         ctx.fill();
-        ctx.globalAlpha = 1;
       });
 
+      // Draw rain
+      ctx.strokeStyle = "#2e5bf1";
+      ctx.globalAlpha = 0.3;
+      ctx.lineWidth = 1;
+
+      raindrops.forEach((drop) => {
+        const y = (drop.y + time * drop.speed * 10) % height;
+        ctx.beginPath();
+        ctx.moveTo(drop.x % width, y);
+        ctx.lineTo((drop.x % width) - 2, y + drop.length);
+        ctx.stroke();
+      });
+
+      // Draw sun rays
+      const sunX = width * 0.8;
+      const sunY = height * 0.2;
+
+      ctx.globalAlpha = 0.2;
+      ctx.strokeStyle = "#f19a2e";
+      ctx.lineWidth = 2;
+
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2 + time * 0.2;
+        const innerRadius = 30;
+        const outerRadius = 60 + Math.sin(time * 2 + i) * 10;
+
+        ctx.beginPath();
+        ctx.moveTo(
+          sunX + Math.cos(angle) * innerRadius,
+          sunY + Math.sin(angle) * innerRadius
+        );
+        ctx.lineTo(
+          sunX + Math.cos(angle) * outerRadius,
+          sunY + Math.sin(angle) * outerRadius
+        );
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
       time += 0.01;
-      animationRef.current = requestAnimationFrame(drawFluidBackground);
+      animationRef.current = requestAnimationFrame(drawWeather);
     };
 
-    drawFluidBackground();
+    drawWeather();
 
     return () => {
       window.removeEventListener("resize", resize);
@@ -89,7 +147,7 @@ export default function FluxPage({ isOpen, onClose }) {
 
       {/* Hero Section */}
       <div className="relative min-h-screen flex flex-col justify-center p-[8vw] overflow-hidden">
-        {/* Fluid Background Canvas */}
+        {/* Weather Canvas */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full pointer-events-none"
@@ -98,16 +156,25 @@ export default function FluxPage({ isOpen, onClose }) {
 
         {/* Content */}
         <div className="relative z-10">
-          <span className="font-mono text-sm font-bold uppercase tracking-widest mb-4 block text-bauhaus-red">
-            01 — FINTECH / APP
+          <span className="font-mono text-sm font-bold uppercase tracking-widest mb-4 block text-bauhaus-blue">
+            09 — API
           </span>
           <h1 className="font-serif text-[clamp(4rem,12vw,10rem)] leading-[0.9] mb-8 uppercase tracking-[-0.02em]">
-            Flux
+            Climate
           </h1>
-          <p className="font-mono text-xl max-w-[600px] leading-relaxed opacity-80">
-            A next-generation fintech application designed for seamless money
-            transfers, intelligent budgeting, and real-time financial insights.
+          <p className="font-mono text-xl max-w-[600px] leading-relaxed opacity-80 mb-8">
+            A brutalist weather dashboard with real-time data, hazard alerts,
+            and animated backgrounds. Weather data meets Swiss design.
           </p>
+          {/* Launch Demo Button */}
+          <a
+            href="http://localhost:5177"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="interactable inline-block px-8 py-4 bg-bauhaus-blue text-white font-display text-lg rounded-full hover:scale-105 transition-transform duration-200 border-2 border-ink no-underline"
+          >
+            ▶ Launch Demo
+          </a>
         </div>
       </div>
 
@@ -119,15 +186,14 @@ export default function FluxPage({ isOpen, onClose }) {
             OVERVIEW
           </span>
           <p className="font-display text-lg leading-relaxed mb-6">
-            Flux reimagines personal finance through a brutalist lens—stripping
-            away unnecessary ornamentation to focus on what matters: your money,
-            your control, your clarity.
+            Climate transforms weather data into a visual experience. The
+            interface adapts its animations to match current conditions—rain,
+            sun, clouds, or storms.
           </p>
           <p className="font-body text-base leading-relaxed opacity-70">
-            Built with a focus on speed and reliability, Flux processes
-            transactions in milliseconds while maintaining bank-grade security.
-            The interface adapts to your financial patterns, surfacing insights
-            exactly when you need them.
+            Powered by the Open-Meteo API, Climate provides current conditions,
+            7-day forecasts, and hazard warnings. The brutalist design ensures
+            data clarity while the animated backgrounds add atmospheric context.
           </p>
         </div>
 
@@ -139,14 +205,12 @@ export default function FluxPage({ isOpen, onClose }) {
             </span>
             <div className="flex flex-wrap gap-3">
               {[
-                "React Native",
-                "TypeScript",
-                "Node.js",
-                "PostgreSQL",
-                "Stripe API",
-                "Plaid",
-                "Redis",
-                "AWS",
+                "React",
+                "Vite",
+                "Vanilla CSS",
+                "Open-Meteo API",
+                "Geocoding API",
+                "ESLint",
               ].map((tech) => (
                 <span
                   key={tech}
@@ -163,13 +227,13 @@ export default function FluxPage({ isOpen, onClose }) {
               <span className="font-mono text-xs font-bold uppercase tracking-widest mb-2 block opacity-60">
                 TIMELINE
               </span>
-              <span className="font-display text-lg">8 Weeks</span>
+              <span className="font-display text-lg">2 Weeks</span>
             </div>
             <div>
               <span className="font-mono text-xs font-bold uppercase tracking-widest mb-2 block opacity-60">
                 ROLE
               </span>
-              <span className="font-display text-lg">Full Stack Dev</span>
+              <span className="font-display text-lg">Frontend Dev</span>
             </div>
             <div>
               <span className="font-mono text-xs font-bold uppercase tracking-widest mb-2 block opacity-60">
@@ -181,7 +245,7 @@ export default function FluxPage({ isOpen, onClose }) {
               <span className="font-mono text-xs font-bold uppercase tracking-widest mb-2 block opacity-60">
                 STATUS
               </span>
-              <span className="font-display text-lg text-bauhaus-red">
+              <span className="font-display text-lg text-bauhaus-blue">
                 ● Live
               </span>
             </div>
@@ -197,28 +261,28 @@ export default function FluxPage({ isOpen, onClose }) {
         <div className="grid grid-cols-3 gap-6 max-lg:grid-cols-2 max-md:grid-cols-1">
           {[
             {
-              title: "Instant Transfers",
-              desc: "Move money between accounts in under 3 seconds with real-time confirmation.",
+              title: "City Search",
+              desc: "Search any city worldwide with geocoding-powered location lookup.",
             },
             {
-              title: "Smart Budgets",
-              desc: "AI-powered budgeting that learns your spending patterns and adapts automatically.",
+              title: "Animated Backgrounds",
+              desc: "Dynamic backgrounds that change based on current weather conditions.",
             },
             {
-              title: "Security First",
-              desc: "Bank-grade encryption, biometric authentication, and fraud detection.",
+              title: "Hazard Ticker",
+              desc: "Scrolling alerts for extreme weather conditions and warnings.",
             },
             {
-              title: "Multi-Currency",
-              desc: "Hold and exchange 30+ currencies with competitive FX rates.",
+              title: "7-Day Forecast",
+              desc: "Extended forecast with daily highs, lows, and condition icons.",
             },
             {
-              title: "Analytics Dashboard",
-              desc: "Beautiful visualizations of your financial health and spending trends.",
+              title: "Weather Details",
+              desc: "Expandable panel showing humidity, wind speed, and more.",
             },
             {
-              title: "Open Banking",
-              desc: "Connect all your accounts for a unified view of your finances.",
+              title: "Responsive Design",
+              desc: "Optimized layout for all screen sizes from mobile to desktop.",
             },
           ].map((feature, idx) => (
             <div
@@ -233,7 +297,7 @@ export default function FluxPage({ isOpen, onClose }) {
       </div>
 
       {/* CTA Section */}
-      <div className="border-t-2 border-line bg-bauhaus-red p-[4vw] text-white">
+      <div className="border-t-2 border-line bg-bauhaus-blue p-[4vw] text-white">
         <div className="flex justify-between items-center max-md:flex-col max-md:gap-6">
           <div>
             <span className="font-mono text-xs font-bold uppercase tracking-widest mb-2 block opacity-70">
@@ -246,7 +310,7 @@ export default function FluxPage({ isOpen, onClose }) {
           <a
             href="#contact"
             onClick={onClose}
-            className="interactable px-8 py-4 bg-white text-bauhaus-red font-display text-lg rounded-full hover:scale-105 transition-transform duration-200 no-underline"
+            className="interactable px-8 py-4 bg-white text-bauhaus-blue font-display text-lg rounded-full hover:scale-105 transition-transform duration-200 no-underline"
           >
             Get in Touch →
           </a>
