@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const CURSOR_LAG = 0.1;
-const ELASTICITY = 0.0025;
+const ELASTICITY = 0.0018;
 
 export default function PhysicsCursor() {
   const cursorRef = useRef(null);
