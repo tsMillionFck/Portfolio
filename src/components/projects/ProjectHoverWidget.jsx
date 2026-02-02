@@ -166,6 +166,30 @@ export default function ProjectHoverWidget({ type }) {
           </div>
         );
 
+      case "library": // 10. UI/UX Library
+        return (
+          <div className="w-full h-full bg-[#f4f4f5] p-6 flex flex-col justify-between font-sans relative overflow-hidden group">
+            <div className="absolute top-[-20%] right-[-20%] w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1),transparent)] pointer-events-none"></div>
+
+            <div className="relative z-10">
+              <div className="flex gap-2 mb-4">
+                <div className="w-8 h-8 rounded bg-white shadow-sm border border-slate-200"></div>
+                <div className="w-8 h-8 rounded-full bg-slate-200"></div>
+                <div className="w-8 h-8 rounded-none border border-black bg-yellow-300 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"></div>
+              </div>
+              <h3 className="font-bold text-slate-800 text-lg leading-tight">
+                Design
+                <br />
+                System
+              </h3>
+            </div>
+
+            <div className="w-full bg-slate-200 h-1 mt-auto overflow-hidden rounded-full">
+              <div className="w-1/3 h-full bg-blue-500 group-hover:w-full transition-all duration-500"></div>
+            </div>
+          </div>
+        );
+
       default:
         return <div className="w-full h-full bg-gray-100" />;
     }

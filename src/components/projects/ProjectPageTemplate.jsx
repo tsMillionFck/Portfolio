@@ -1,9 +1,18 @@
 import { projectAnimations } from "./projectAnimations";
 import { useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function ProjectPageTemplate({ isOpen, onClose, project }) {
+  const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
+
+  // Scroll to top when opened
+  useEffect(() => {
+    if (isOpen && containerRef.current) {
+      containerRef.current.scrollTo(0, 0);
+    }
+  }, [isOpen, project]);
 
   useEffect(() => {
     if (!isOpen || !project) return;
@@ -45,8 +54,11 @@ export default function ProjectPageTemplate({ isOpen, onClose, project }) {
   const { title, category, description, techStack, demoUrl, longDescription } =
     project;
 
-  return (
-    <div className="fixed inset-0 z-[200] bg-white text-black overflow-y-auto selection:bg-black selection:text-white">
+  return createPortal(
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-[200] bg-white text-black overflow-y-auto selection:bg-black selection:text-white"
+    >
       {/* Close Button */}
       <button
         onClick={onClose}
@@ -134,6 +146,7 @@ export default function ProjectPageTemplate({ isOpen, onClose, project }) {
           ← Back to Portfolio
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

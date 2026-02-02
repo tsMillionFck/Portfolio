@@ -10,6 +10,7 @@ import MioPage from "./projects/MioPage";
 import ChatPage from "./projects/ChatPage";
 import MindMapPage from "./projects/MindMapPage";
 import UILibraryPage from "./projects/UILibraryPage";
+import MioPipelinePage from "./projects/MioPipelinePage";
 
 // Featured Grid Projects (Row 1)
 const gridProjects = [
@@ -43,15 +44,17 @@ const gridProjects = [
     hasPage: "mindmap",
     reference: "Knowledge Graph",
   },
+
   {
-    category: "DESIGN / LIBRARY",
-    title: "UI/UX Library",
+    category: "AI / PIPELINE",
+    title: "Mio-Pipeline",
     shapeStyle: {
-      background: "var(--blue)",
-      borderRadius: "20px",
+      background: "#1a1b26",
+      border: "2px solid #bb9af7",
+      borderRadius: "4px",
     },
-    hasPage: "library",
-    reference: "Design System",
+    hasPage: "miopipeline",
+    reference: "Visual Graph Engine",
   },
   {
     category: "COMMUNICATION",
@@ -216,8 +219,27 @@ const drawerProjects = [
       { name: "Tailwind CSS", type: "frontend" },
       { name: "Lucide React", type: "frontend" },
     ],
+
     buttonText: "GENERATE",
     demoUrl: "https://design-gen-eight.vercel.app",
+  },
+  {
+    number: "14",
+    category: "DESIGN MENU",
+    title: "UI/UX Library",
+    description:
+      "A curated Design Encyclopedia. Explore, visualize, and implement distinct web design aesthetics from Swiss Style to Neo-Brutalism.",
+    longDescription:
+      "Core Architecture: React 18 / Vite. / Purpose: A living documentation for UI trends. / Features: Interactive Catalog to switch design schools, Live Rendering of components, and Context-Aware backgrounds. / Design Schools: Structuralists, Morphisms, and Extremists.",
+    visual: <ProjectHoverWidget type="library" />,
+    techStack: [
+      { name: "React 18", type: "frontend" },
+      { name: "Vite", type: "frontend" },
+      { name: "Tailwind", type: "frontend" },
+    ],
+    buttonText: "BROWSE",
+    hasPage: "library",
+    demoUrl: "https://ui-library-x.vercel.app",
   },
 ];
 
@@ -230,6 +252,7 @@ export default function SelectedWorks() {
   const [chatOpen, setChatOpen] = useState(false);
   const [mindMapOpen, setMindMapOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [mioPipelineOpen, setMioPipelineOpen] = useState(false);
 
   // Drawer project pages state
   const [activeDrawerProject, setActiveDrawerProject] = useState(null);
@@ -242,6 +265,7 @@ export default function SelectedWorks() {
     if (pageType === "chat") setChatOpen(true);
     if (pageType === "mindmap") setMindMapOpen(true);
     if (pageType === "library") setLibraryOpen(true);
+    if (pageType === "miopipeline") setMioPipelineOpen(true);
   };
 
   return (
@@ -262,6 +286,10 @@ export default function SelectedWorks() {
       <UILibraryPage
         isOpen={libraryOpen}
         onClose={() => setLibraryOpen(false)}
+      />
+      <MioPipelinePage
+        isOpen={mioPipelineOpen}
+        onClose={() => setMioPipelineOpen(false)}
       />
 
       {/* Reusable Drawer Project Modal */}
@@ -316,7 +344,11 @@ export default function SelectedWorks() {
             visual={project.visual}
             techStack={project.techStack}
             buttonText={project.buttonText}
-            onClick={() => setActiveDrawerProject(project)}
+            onClick={() =>
+              project.hasPage
+                ? handleProjectClick(project.hasPage)
+                : setActiveDrawerProject(project)
+            }
             demoUrl={project.demoUrl}
           />
         ))}

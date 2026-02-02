@@ -1,28 +1,17 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import PhysicsCursor from "./components/PhysicsCursor";
-import SmoothScroll from "./components/SmoothScroll";
-import Header from "./components/Header";
-import HeroSection from "./components/HeroSection";
-import EyeSection from "./components/EyeSection";
-import SelectedWorks from "./components/SelectedWorks";
-import AboutSection from "./components/AboutSection";
-import ContactSection from "./components/ContactSection";
+import Home from "./components/Home";
+import CreationLab from "./components/CreationLab";
 
 export default function App() {
   return (
     <ThemeProvider>
-      <PhysicsCursor />
-      <Header />
-      <SmoothScroll>
-        {/* Spacer for fixed header */}
-        <div className="h-20" />
-
-        <HeroSection />
-        <EyeSection />
-        <SelectedWorks />
-        <AboutSection />
-        <ContactSection />
-      </SmoothScroll>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/creation-lab" element={<CreationLab />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

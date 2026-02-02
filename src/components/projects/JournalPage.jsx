@@ -4,83 +4,180 @@ import { useGSAP } from "@gsap/react";
 
 export default function JournalPage({ isOpen, onClose }) {
   const canvasRef = useRef(null);
+  const [mode, setMode] = useState("zen"); // zen, ink, grid, noise
+  const [showControls, setShowControls] = useState(false);
 
-  // Graph Node Animation (Subtle Background)
+  // Background Animation
   useEffect(() => {
     if (!isOpen) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    let nodes = [];
-    const maxNodes = 50;
+    let animationFrameId;
+    let particles = [];
+    let time = 0;
 
     const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      // Handle high-DPI displays
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      init();
     };
-    resize();
-    window.addEventListener("resize", resize);
 
-    class Node {
+    class Particle {
       constructor() {
         this.reset();
       }
       reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1; // Smaller, more subtle
-        this.vx = (Math.random() - 0.5) * 0.2; // Slower
+        const w = canvas.width / window.devicePixelRatio;
+        const h = canvas.height / window.devicePixelRatio;
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.size = Math.random() * 2 + 0.5;
+        this.vx = (Math.random() - 0.5) * 0.2;
         this.vy = (Math.random() - 0.5) * 0.2;
+        this.life = Math.random();
+        this.maxLife = 1 + Math.random();
       }
       update() {
-        this.x += this.vx;
-        this.y += this.vy;
+        const w = canvas.width / window.devicePixelRatio;
+        const h = canvas.height / window.devicePixelRatio;
 
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = "#000000"; // Pure Black
-        ctx.globalAlpha = 0.1; // Very subtle
-        ctx.fill();
+        if (mode === "zen") {
+          // Breathing movement
+          this.x += Math.sin(time * 0.001 + this.y * 0.01) * 0.2;
+          this.y += Math.cos(time * 0.001 + this.x * 0.01) * 0.2;
+        } else if (mode === "ink") {
+          // Flow movement
+          this.x += this.vx * 3 + Math.sin(time * 0.005) * 0.5;
+          this.y += this.vy * 3 + Math.cos(time * 0.002) * 0.5;
+        } else if (mode === "grid") {
+          // Static aligned
+        } else if (mode === "noise") {
+          this.reset(); // Constant flickering
+        }
 
-        // Connect to nearby nodes
-        nodes.forEach((other) => {
-          const dx = this.x - other.x;
-          const dy = this.y - other.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 100) {
-            ctx.beginPath();
-            ctx.strokeStyle = "#000000";
-            ctx.globalAlpha = (1 - dist / 100) * 0.15;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(this.x, this.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.stroke();
-          }
-        });
+        this.life -= 0.01;
+        if (
+          this.life <= 0 ||
+          this.x < 0 ||
+          this.x > w ||
+          this.y < 0 ||
+          this.y > h
+        ) {
+          this.reset();
+        }
       }
     }
 
-    for (let i = 0; i < maxNodes; i++) nodes.push(new Node());
+    const init = () => {
+      particles = [];
+      const count =
+        mode === "zen" ? 100 : mode === "ink" ? 200 : mode === "grid" ? 0 : 300;
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle());
+      }
+    };
+
+    const drawZen = (w, h) => {
+      // Soft glowing focus light
+      const cx = w / 2 + Math.sin(time * 0.0005) * (w * 0.1);
+      const cy = h / 2 + Math.cos(time * 0.0007) * (h * 0.1);
+
+      const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.6);
+      gradient.addColorStop(0, "rgba(0,0,0,0.0)");
+      gradient.addColorStop(1, "rgba(0,0,0,0.06)"); // Vignette
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+
+      // Subtle floating specs
+      ctx.fillStyle = "rgba(0,0,0,0.3)";
+      particles.forEach((p) => {
+        p.update();
+        ctx.globalAlpha = Math.sin(p.life * Math.PI) * 0.2;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    };
+
+    const drawInk = (w, h) => {
+      // Organic ink trails
+      ctx.fillStyle = "rgba(255,255,255,0.02)"; // Trails
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.fillStyle = "#000";
+      particles.forEach((p) => {
+        p.update();
+        ctx.globalAlpha = Math.sin(p.life * Math.PI) * 0.15;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    };
+
+    const drawGrid = (w, h) => {
+      // Moving grid
+      const gridSize = 40;
+      const offsetX = (time * 0.5) % gridSize;
+      const offsetY = (time * 0.2) % gridSize;
+
+      ctx.strokeStyle = "rgba(0,0,0,0.06)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+
+      for (let x = offsetX; x <= w; x += gridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+      }
+      for (let y = offsetY; y <= h; y += gridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+      }
+      ctx.stroke();
+    };
+
+    const drawNoise = (w, h) => {
+      // Digital Noise
+      particles.forEach((p) => {
+        p.update();
+        ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.1})`;
+        ctx.fillRect(p.x, p.y, 2, 2);
+      });
+    };
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      nodes.forEach((node) => {
-        node.update();
-        node.draw();
-      });
-      requestAnimationFrame(animate);
+      time += 16;
+      const w = canvas.width / window.devicePixelRatio;
+      const h = canvas.height / window.devicePixelRatio;
+
+      if (mode !== "ink") {
+        ctx.clearRect(0, 0, w, h);
+      }
+
+      if (mode === "zen") drawZen(w, h);
+      else if (mode === "ink") drawInk(w, h);
+      else if (mode === "grid") drawGrid(w, h);
+      else if (mode === "noise") drawNoise(w, h);
+
+      animationFrameId = requestAnimationFrame(animate);
     };
+
+    window.addEventListener("resize", resize);
+    resize();
     animate();
 
     return () => {
       window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [isOpen]);
+  }, [isOpen, mode]);
 
   if (!isOpen) return null;
 
@@ -120,6 +217,40 @@ export default function JournalPage({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[200] bg-white text-black overflow-y-auto selection:bg-black selection:text-white">
+      {/* Test Controls (Developer Mode) */}
+      <div
+        className={`fixed left-6 bottom-6 z-[220] flex flex-col gap-2 transition-all duration-300 ${
+          showControls
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
+        <div className="bg-white border-2 border-black p-2 rounded shadow-xl flex flex-col gap-2">
+          <span className="font-mono text-[10px] uppercase font-bold text-center border-b border-black/10 pb-1">
+            Animation Mode
+          </span>
+          {["zen", "ink", "grid", "noise"].map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`px-3 py-1 font-sans text-xs uppercase tracking-wider text-left hover:bg-black hover:text-white transition-colors flex justify-between items-center ${
+                mode === m ? "bg-black text-white" : "text-black"
+              }`}
+            >
+              {m} {mode === m && "●"}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Trigger for controls */}
+      <button
+        onClick={() => setShowControls(!showControls)}
+        className="fixed left-6 bottom-6 z-[221] w-8 h-8 flex items-center justify-center rounded-full bg-transparent hover:bg-black/5 text-black/20 hover:text-black transition-colors"
+        title="Dev Controls"
+      >
+        ⚙
+      </button>
+
       {/* Close Button */}
       <button
         onClick={onClose}
@@ -160,7 +291,7 @@ export default function JournalPage({ isOpen, onClose }) {
       </div>
 
       {/* Details Grid */}
-      <div className="grid grid-cols-4 w-full border-t-2 border-black max-lg:grid-cols-2 max-md:grid-cols-1">
+      <div className="relative z-10 bg-white grid grid-cols-4 w-full border-t-2 border-black max-lg:grid-cols-2 max-md:grid-cols-1">
         {/* Core Aesthetic */}
         <div className="col-span-2 max-lg:col-span-1 border-r-2 border-black p-[4vw] max-md:border-r-0">
           <span className="font-mono text-xs font-bold uppercase tracking-widest mb-6 block text-black">
@@ -222,7 +353,7 @@ export default function JournalPage({ isOpen, onClose }) {
       </div>
 
       {/* Interactions Section */}
-      <div className="border-t-2 border-black p-[4vw]">
+      <div className="relative z-10 bg-white border-t-2 border-black p-[4vw]">
         <span className="font-mono text-xs font-bold uppercase tracking-widest mb-12 block text-black">
           INTERACTIONS & MOTION
         </span>
@@ -244,7 +375,7 @@ export default function JournalPage({ isOpen, onClose }) {
       </div>
 
       {/* CTA Section */}
-      <div className="border-t-2 border-black bg-black p-[4vw] text-white">
+      <div className="relative z-10 border-t-2 border-black bg-black p-[4vw] text-white">
         <div className="flex justify-between items-center max-md:flex-col max-md:gap-8 max-md:items-start">
           <div>
             <span className="font-mono text-xs font-bold uppercase tracking-widest mb-4 block text-white/60">
@@ -266,7 +397,7 @@ export default function JournalPage({ isOpen, onClose }) {
       </div>
 
       {/* Back Button */}
-      <div className="border-t border-black/20 p-[4vw] flex justify-center bg-white">
+      <div className="relative z-10 border-t border-black/20 p-[4vw] flex justify-center bg-white">
         <button
           onClick={onClose}
           className="interactable font-sans text-sm uppercase tracking-widest border-b border-black pb-1 hover:opacity-50 transition-opacity text-black"

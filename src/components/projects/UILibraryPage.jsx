@@ -148,7 +148,7 @@ export default function UILibraryPage({ isOpen, onClose }) {
           </p>
 
           <a
-            href="https://ui-library-beta-teal.vercel.app"
+            href="https://ui-library-x.vercel.app"
             target="_blank"
             rel="noopener noreferrer"
             className="interactable inline-block px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors duration-200 shadow-xl shadow-blue-200/50 no-underline"
@@ -265,7 +265,7 @@ export default function UILibraryPage({ isOpen, onClose }) {
           Explore the Aesthetics
         </h2>
         <a
-          href="https://ui-library-beta-teal.vercel.app"
+          href="https://ui-library-x.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
           className="px-10 py-5 bg-white text-zinc-900 font-bold rounded-full hover:scale-105 transition-transform duration-200 no-underline"

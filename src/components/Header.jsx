@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import FluidMusicButton from "./FluidMusicButton";
+import { useRef, useEffect } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 
 export default function Header() {
@@ -130,8 +131,10 @@ export default function Header() {
           </a>
         </div>
 
-        {/* Theme Toggle */}
-        <div className="min-h-[80px] p-5 flex justify-center items-center">
+        {/* Controls (Theme & Music) */}
+        <div className="min-h-[80px] p-5 flex justify-center items-center gap-4">
+          <FluidMusicButton />
+
           <button
             onClick={toggleTheme}
             className="interactable relative w-14 h-14 border-none cursor-pointer bg-transparent p-0 transition-transform duration-200 hover:scale-110"

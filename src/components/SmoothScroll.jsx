@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const SCROLL_VISCOSITY = 0.08;
+const SCROLL_VISCOSITY = 0.0662;
 
 export default function SmoothScroll({ children }) {
   const containerRef = useRef(null);

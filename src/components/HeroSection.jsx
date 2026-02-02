@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 export default function HeroSection() {
   const canvasRef = useRef(null);
@@ -115,6 +116,14 @@ export default function HeroSection() {
             for fancy, but for necessity. The elegant solution is the one that
             works.
           </p>
+          <div className="mt-8">
+            <Link
+              to="/creation-lab"
+              className="inline-block px-8 py-3 border-2 border-bauhaus-blue text-bauhaus-blue font-mono text-sm font-bold uppercase tracking-widest hover:bg-bauhaus-blue hover:text-white transition-colors duration-300"
+            >
+              Enter Creation Lab
+            </Link>
+          </div>
         </div>
       </div>
     </div>
